@@ -174,6 +174,24 @@ def amsdos_file_info(data):
         print("Checksum: ", hex(checksum))
     
         #print(len(data), file_length, hex(file_length), len(data)-file_length, data[66],hex(data[65]),hex(data[64]))
+        
+    return (checksum != mychecksum)
+
+def print_bytes(data):
+    
+    if amsdos_file_info(data):    
+        #strip header
+        data=data[:128]
+    
+    linesize=30
+    
+    print(";Bytes from",args.dump)
+    for i in range(len(data)):
+        if not(i%linesize): print("defb ",end="")
+        print("%3d"%(data[i]),end="")
+        if (not((i+1)%linesize) or ((i+1)==len(data))): print()
+        else: print(",",end='')
+        
 
 
 def main():
@@ -190,9 +208,11 @@ def main():
     parser.add_argument('--terminal', '-t', help='Terminal', action='store_true')
     parser.add_argument('--port', '-p', type=int, default=10000, help='Port')
     parser.add_argument('--check', '-c', help='Check file')
+    parser.add_argument('--dump', '-b', help='Binary to defb')
     parser.add_argument('--myip', '-m', help='Check current IP', action='store_true')
 
     # Execute parse_args()
+    global args
     args = parser.parse_args()
     
     if (args.check):
@@ -201,6 +221,16 @@ def main():
             with open(fname, 'rb') as reader:
                 data = reader.read()
             amsdos_file_info(data)
+            
+        except FileNotFoundError:
+            print('Cannot open file \'%s\'' % (fname))        
+
+    if (args.dump):
+        fname=args.dump
+        try:
+            with open(fname, 'rb') as reader:
+                data = reader.read()
+            print_bytes(data)
             
         except FileNotFoundError:
             print('Cannot open file \'%s\'' % (fname))        
