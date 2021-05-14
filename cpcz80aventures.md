@@ -3,15 +3,14 @@
 This is the documentation of my journey into learning Z80 assembly. It is not a tutorial on Z80, just a quick start guide to mess around Z80 and CPC.
 
 These are some of resources I used to on my way to write this.
-
-	- For a good Z80 tutorial you can visit https://www.chibiakumas.com/z80/index.php
-	- Firmware http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/
-	- A nice page with clearly explained Z80 instructions http://www.z80.info/z80code.htm
-	- Locomotive basic 1.1 disassembly http://www.cpctech.org.uk/docs/basic.asm
-	- CPC6128 operating system ROM http://www.cpctech.org.uk/docs/os.asm
-	- German book about firmware https://k1.spdns.de/Vintage/Schneider
-	- Markdown cheatsheet https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
-	- and many others ...
+- For a good Z80 tutorial you can visit https://www.chibiakumas.com/z80/index.php
+- Firmware http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/
+- A nice page with clearly explained Z80 instructions http://www.z80.info/z80code.htm
+- Locomotive basic 1.1 disassembly http://www.cpctech.org.uk/docs/basic.asm
+- CPC6128 operating system ROM http://www.cpctech.org.uk/docs/os.asm
+- German book about firmware https://k1.spdns.de/Vintage/Schneider
+- Markdown cheatsheet https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
+- and many others ...
 
 I have used Linux but on Windows you can also do it.
 I will use WinAPE http://www.winape.net/downloads.jsp running under linux with WINE (sudo apt install wine).
