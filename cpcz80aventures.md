@@ -300,6 +300,7 @@ Amsdos file : hello.bin
 
 We save the file, but we want to load it
 http://www.cpcwiki.eu/forum/programming/load-address-problem/
+https://www.cpcwiki.eu/forum/programming/memory-limit-on-loading-programs/
 
 ### Mixing asm and BASIC
 
