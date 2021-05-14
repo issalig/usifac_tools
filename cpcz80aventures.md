@@ -302,6 +302,14 @@ We save the file, but we want to load it
 http://www.cpcwiki.eu/forum/programming/load-address-problem/
 https://www.cpcwiki.eu/forum/programming/memory-limit-on-loading-programs/
 
+http://www.cpcwiki.eu/forum/programming/reading-a-binary-file-into-memory-using-basic/
+
+Now we need to reserve memory, as we will be using the program at &1200, the last BASIC memory will be one bye less, i.e. &11FF
+
+```basic
+MEMORY &11FF
+```
+
 ### Mixing asm and BASIC
 
 Now we know a little bit of assembly and that we have also seen how a BASIC code is stored in memory.
