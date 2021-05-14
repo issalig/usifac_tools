@@ -250,9 +250,9 @@ If everything was fine, now you are seeing "Hello world!" on the screen.
 Now save it with (size of the program is 39 (&27) bytes as commented before)
 save "hello.bin",b,&1200,&27
 
-Eject disc if necessary and ask iDSK what is this file about (-h stands for hex dump, not help :) ).
+Eject disc if necessary and ask iDSK what is this file about.
 
-iDSK can disassemble the program but he does not know that there is a string starting at &1200, so it will interprete these bytes as Z80 instructions :) Take into account that these defb regions sholud not be executed. In this example there is a jump just before the defb and this help us to keep things right.
+iDSK can disassemble the program but it does not know that there is a string starting at &1200, so it will interprete these bytes as Z80 instructions :) Take into account that these defb regions sholud not be executed. In this example there is a jump just before the defb and this help us to keep things right.
 
 
 ```
