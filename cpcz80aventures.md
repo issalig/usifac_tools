@@ -290,13 +290,16 @@ If you want an easier way of having the binary. You can get it from iDSK and pas
 ```
 iDSK hello.dsk -h hello.bin
 DSK : hello.dsk
-Amsdos file : hello2.bin
+Amsdos file : hello.bin
 #0000 21 1A 12 CD 10 12 3E 0D CD 5A BB 3E 0A C3 5A BB | !.....>..Z.>..Z.
 #0010 7E FE FF C8 23 CD 5A BB 18 F6 48 65 6C 6C 6F 20 | ....#.Z...Hello.
 #0020 57 6F 72 6C 64 21 FF 00 00 00 00 00 00 00 00 00 | World!..........
 #0030 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 | ................
 #0040 1A 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 | ................
 ```
+
+We save the file, but we want to load it
+http://www.cpcwiki.eu/forum/programming/load-address-problem/
 
 ### Mixing asm and BASIC
 
