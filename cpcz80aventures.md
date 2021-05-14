@@ -308,7 +308,11 @@ Now we need to reserve memory, as we will be using the program at &1200, the las
 
 ```basic
 MEMORY &11FF
+LOAD "hello.bin", &1200
+call &1200
 ```
+If MEMORY is not set, we will get "Memory full" message.
+
 
 ### Mixing asm and BASIC
 
@@ -352,5 +356,5 @@ Hello World!
 Ready
 ```
 
-
+n
 And what about runnig the BASIC program from asm, well, this will be in the next episode.
