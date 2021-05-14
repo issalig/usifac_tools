@@ -1,9 +1,9 @@
 # CPC Basic and Z80 adventures
 
-This is the documentation of my journey into learning Z80 assembly. It is not a tutorial on Z80, just a kickstart guide to mess with Z80 and CPC.
+This is the documentation of my journey into learning Z80 assembly. It is not a tutorial on Z80, just a kickstart guide to mess around Z80 and CPC.
 
 I have used Linux but on Windows you can also do it.
-I will use WinAPE running under linux with WINE (sudo apt install wine).
+I will use WinAPE http://www.winape.net/downloads.jsp running under linux with WINE (sudo apt install wine).
 Also I will use iDSK tools https://github.com/cpcsdk/idsk but you can use similar tools.
 
 For hexadecimal numbers I will use &,#,$,h indistinctively or any other symbol normally used for that.
