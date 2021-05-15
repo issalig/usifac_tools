@@ -358,3 +358,9 @@ Ready
 
 n
 And what about runnig the BASIC program from asm, well, this will be in the next episode.
+
+
+Reference for ROM, RAM
+http://www.cpcwiki.eu/imgs/f/f6/S968se02.pdf
+
+
