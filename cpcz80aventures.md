@@ -356,13 +356,10 @@ Hello World!
 Ready
 ```
 
-n
 And what about runnig the BASIC program from asm, well, this will be in the next episode.
-
 
 Reference for ROM, RAM
 http://www.cpcwiki.eu/imgs/f/f6/S968se02.pdf
-
 
 In the examples above you have noticed that we have used CALL &XXXX. These are calls to routines utilities provided by the firmware such as printing a char in screen that resides in address &BB5A and is known as TXT OUTPUT. We can found these routines because there is a Jumpblock that defines their entry points. That is, at RAM address &BB05 there is a JP instruction that redirects to the starting place of the routine. The jumblock is copied into RAM from the JUMP RESET call.
 In particular if we go to the disassembly of firmware http://cpctech.cpc-live.com/docs/os.asm
@@ -392,19 +389,18 @@ and this is the code that does.
 
 As jumpblock resides in RAM it is possible to change the jump address and change the called routine for one that best fits our requierements.
 
-Imaging we want to print only lowcased characters, the routine for doing that would be:
+
+
+Imaging we want to print only uppercased characters, the routine for doing that would be:
 
 ```asm
-ld(a),hl
-cp 'a'
-jr nc, to_upper_ok
-cp 'z'+1              if
-jr nc, to_upper_ok
-sub 32
-ld(hl),a
+cp 'a'                 ; A=A-'a'  C=1 if A<'a'
+jr nc, already_lower   ; if character > 'a' nothing to do
+cp 'z'+1               ; A=A-'z'+1  
+jr nc, already_lower   ; if character <= 'z' nothing to do
+add 32                 ; add 32 to convert it to UPPER case
 
-to_upper_ok:
+already_lower:
+call &13fe
 ret
-
-add ,32
 ```
