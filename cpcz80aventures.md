@@ -364,3 +364,47 @@ Reference for ROM, RAM
 http://www.cpcwiki.eu/imgs/f/f6/S968se02.pdf
 
 
+In the examples above you have noticed that we have used CALL &XXXX. These are calls to routines utilities provided by the firmware such as printing a char in screen that resides in address &BB5A and is known as TXT OUTPUT. We can found these routines because there is a Jumpblock that defines their entry points. That is, at RAM address &BB05 there is a JP instruction that redirects to the starting place of the routine. The jumblock is copied into RAM from the JUMP RESET call.
+In particular if we go to the disassembly of firmware http://cpctech.cpc-live.com/docs/os.asm
+
+First, we will look for the TXT OUTPUT address and we can see it is entry number 30 and its code is located at &13fe
+```asm
+defw &13fe		;; 30 firmware function: TXT OUTPUT
+```
+
+and this is the code that does.
+
+```asm
+;;===========================================================================
+;; TXT OUTPUT
+
+13fe f5        push    af
+13ff c5        push    bc
+1400 d5        push    de
+1401 e5        push    hl
+1402 cdd9bd    call    $bdd9			; IND: TXT OUT ACTION
+1405 e1        pop     hl
+1406 d1        pop     de
+1407 c1        pop     bc
+1408 f1        pop     af
+1409 c9        ret     
+```
+
+As jumpblock resides in RAM it is possible to change the jump address and change the called routine for one that best fits our requierements.
+
+Imaging we want to print only lowcased characters, the routine for doing that would be:
+
+```asm
+ld(a),hl
+cp 'a'
+jr nc, to_upper_ok
+cp 'z'+1              if
+jr nc, to_upper_ok
+sub 32
+ld(hl),a
+
+to_upper_ok:
+ret
+
+add ,32
+```
