@@ -391,13 +391,13 @@ As jumpblock resides in RAM it is possible to change the jump address and change
 
 
 
-Imaging we want to print only uppercased characters, the routine for doing that would be:
+Imaging we want to print only uppercased characters, so we will add 32 to any character between 'a' and 'z'. The routine for doing that would be:
 
 ```asm
-cp 'a'                 ; A=A-'a'  C=1 if A<'a'
-jr nc, already_lower   ; if character > 'a' nothing to do
-cp 'z'+1               ; A=A-'z'+1  
-jr nc, already_lower   ; if character <= 'z' nothing to do
+cp 'a'                 ; A-'a'   C=1 if A<'a'
+jr c, already_lower    ; if character < 'a' nothing to do
+cp 'z'+1               ; A-'z'+1 C=1 if A<='z'  
+jr nc, already_lower   ; if character > 'z' nothing to do
 add 32                 ; add 32 to convert it to UPPER case
 
 already_lower:
