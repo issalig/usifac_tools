@@ -404,3 +404,5 @@ already_lower:
 call &13fe
 ret
 ```
+
+http://www.cpcwiki.eu/forum/programming/load-using-firmware-loader-with-messages-without-%27press-play-then-any-key%27/
