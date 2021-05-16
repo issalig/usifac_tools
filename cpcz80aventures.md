@@ -323,7 +323,7 @@ Yes, it is.
 
 For this example I will use code borrowed from USIFAC card and we will write our HELLO.BAS directly from asm.
 
-BASIC program start at &170
+BASIC program start at &170 **CHECK THIS**
 
 ```asm
 data_size equ 39                            ; size of BASIC file, we know it is 39 bytes
