@@ -394,6 +394,16 @@ As jumpblock resides in RAM it is possible to change the jump address and change
 Imaging we want to print only uppercased characters, so we will add 32 to any character between 'a' and 'z'. The routine for doing that would be:
 
 ```asm
+; ld a, (&bb5a) CF
+; push a
+; ld a, (&bb5b) FE
+; ld a, (&bb5c) 93 -> 1001 0011   bit 14    El bit 14 controla la ROM   --->  13   bit 8 is ignored  
+inferior (poniendolo a 1 la deshabilita), y con el bit 15 se 
+controla del mismo modo la ROM superior.
+
+check this for reading jumpblocks
+https://archive.org/stream/Programacion_Avanzada_del_Amstrad_1985_Anaya_Multimedia_ES/Programacion_Avanzada_del_Amstrad_1985_Anaya_Multimedia_ES_djvu.txt
+
 cp 'a'                 ; A-'a'   C=1 if A<'a'
 jr c, already_lower    ; if character < 'a' nothing to do
 cp 'z'+1               ; A-'z'+1 C=1 if A<='z'  
