@@ -1,6 +1,6 @@
 # CPC Basic and Z80 adventures
 
-This is the documentation of my journey into learning Z80 assembly. I typed small BASIC programs back in the day and now I am adding a little bit spice with Z80 wizardry.
+This is the documentation of my journey into learning Z80 assembly. I typed small BASIC programs back in the day and now I am spicing up with Z80 wizardry.
 This is **NOT** a tutorial on Z80, just a quick start guide to mess around Z80 and CPC.
 
 I have used Linux but on Windows you can also do it.
@@ -15,7 +15,6 @@ These are some of resources I used to on my way to write this.
 - A nice page with clearly explained Z80 instructions http://www.z80.info/z80code.htm
 - Locomotive basic 1.1 disassembly http://www.cpctech.org.uk/docs/basic.asm
 - CPC6128 operating system ROM http://www.cpctech.org.uk/docs/os.asm
-- German book about firmware https://k1.spdns.de/Vintage/Schneider
 - Markdown cheatsheet https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
 - and many others ...
 
