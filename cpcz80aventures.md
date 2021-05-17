@@ -390,28 +390,84 @@ and this is the code that does.
 As jumpblock resides in RAM it is possible to change the jump address and change the called routine for one that best fits our requierements.
 
 
-
 Imaging we want to print only uppercased characters, so we will add 32 to any character between 'a' and 'z'. The routine for doing that would be:
+
+RST are used to jump to an address in just 1 cycle. It would be equivalent to CALL &00XX
+
+CF will jump to address &0008 LOW JUMP (RST1), that will jump to the address specified by the 2 following bytes, in this case &93FE
 
 ```asm
 ; ld a, (&bb5a) CF
 ; push a
 ; ld a, (&bb5b) FE
-; ld a, (&bb5c) 93 -> 1001 0011   bit 14    El bit 14 controla la ROM   --->  13   bit 8 is ignored  
-inferior (poniendolo a 1 la deshabilita), y con el bit 15 se 
-controla del mismo modo la ROM superior.
+; ld a, (&bb5c) 93 
 
-check this for reading jumpblocks
-https://archive.org/stream/Programacion_Avanzada_del_Amstrad_1985_Anaya_Multimedia_ES/Programacion_Avanzada_del_Amstrad_1985_Anaya_Multimedia_ES_djvu.txt
+      93       FE
+-> 1001 0011 1111 1110
+   ||      |
+   ||      -ignored
+   |-lower ROM enabled
+   -upper ROM disabled
+   
+   
+bit 14 lower ROM bit 15 upper ROM (0 enabled), bit 8 is ignored  
 
+
+
+CF FE 93  ; rst 8
+
+
+
+001   &0008   LOW JUMP (RST 1)
+      Action: Jumps to a routine in either the lower ROM or low RAM
+      Entry:  No entry conditions - all  the  registers are passed to
+              the destination routine unchanged
+      Exit:   The registers are as set  by  the  routine in the lower
+              ROM or RAM or are returned unaltered
+      Notes:  The RST 1 instruction  is  followed  by  a two byte low
+              address, which is defmed as follows:
+                if bit 15 is set, then the upper ROM is disabled
+                if bit 14 is set, then the lower ROM is disabled
+                bits 13 to 0 contain the address of the routine to
+                  jump to
+              This command is used by the  majority of entries in the
+              main firmware jumpblock
+
+
+0008 c38ab9    jp      $b98a			; RST 1 - LOW: LOW JUMP
+
+
+
+	      
+``` asm	      
+org &1200
+
+;overwrite jumbplock at bb5a
+;we are not going to use a
+push hl
+
+ld l, &c3                       ; jp code 
+ld (&bb5a), hl
+ld hl, new_txt_output      ; address of new code
+ld (&bb5b), hl
+
+pop hl
+
+
+; A-Z chars range from 65 to 90
+; a-z chars range from 97 to 122
+;there is an offset of 32 for upper-lower
+
+new_txt_output:
 cp 'a'                 ; A-'a'   C=1 if A<'a'
-jr c, already_lower    ; if character < 'a' nothing to do
-cp 'z'+1               ; A-'z'+1 C=1 if A<='z'  
-jr nc, already_lower   ; if character > 'z' nothing to do
-add 32                 ; add 32 to convert it to UPPER case
+jr c, not_lowercase    ; if character < 'a' is not a lowercase
+cp 'z'+1               ; A-'z'+1 C=0 if A>'z'  
+jr nc, not_lowercase   ; if character > 'z' is not a lowercase
+sub 32                 ; sub 32 to convert it to UPPER case
 
-already_lower:
-call &13fe
+not_lowercase:
+defb &cf,&fe,&93 ; call original jumpblock for TXT OUTPUT
+
 ret
 ```
 
