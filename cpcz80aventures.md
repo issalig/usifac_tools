@@ -411,11 +411,11 @@ The code for our uppercase function will be:
 org &1200
 
 ;overwrite jumbplock at bb5a
-;we are not going to use a
+;we should preserve all registers
 push hl
 ld l, &c3                       ; jp code 
 ld (&bb5a), hl
-ld hl, uppercase_txt_output      ; address of new code
+ld hl, uppercase_txt_output     ; address of new code
 ld (&bb5b), hl
 pop hl
 
@@ -438,5 +438,70 @@ defb &cf,&fe,&93 ; call original jumpblock for TXT OUTPUT
 
 ret
 ```
+
+Call it from BASIC and you will see messages uppercased 
+```
+call &1200
+READY
+10 print "hello"
+run
+HELLO
+READY
+```
+but if you Pause on WinAPE and look for "hello" (F7) it will in lowercase.
+
+
+We can also use parameters in CALL and for example CALL &1200,0 to restore the original function.
+
+``` asm	      
+org &1200
+
+cp 1                            ; check number of parameters of external call
+jp nz, install                  ; if no params install
+ld a,(ix+0)
+cp 0
+jc nc, restore                  ; if param1 == 0 then restore
+
+restore:
+push hl
+ld l, &cf                       ; rst
+ld (&bb5a), hl
+ld hl, &93fe                    ; original bytes
+ld (&bb5b), hl
+pop hl
+ret                             ; all done
+
+install:
+;overwrite jumbplock at bb5a
+;we should preserve all registers
+push hl
+ld l, &c3                       ; jp code 
+ld (&bb5a), hl
+ld hl, uppercase_txt_output     ; address of new code
+ld (&bb5b), hl
+pop hl
+
+; A-Z chars range from 65 to 90
+; a-z chars range from 97 to 122
+;there is an offset of 32 for upper-lower
+
+uppercase_txt_output:
+cp 'a'                 ; A-'a'   C=1 if A<'a'
+jr c, not_lowercase    ; if character < 'a' is not a lowercase
+cp 'z'+1               ; A-'z'+1 C=0 if A>'z'  
+jr nc, not_lowercase   ; if character > 'z' is not a lowercase
+sub 32                 ; sub 32 to convert it to UPPER case
+
+not_lowercase:
+defb &cf,&fe,&93 ; call original jumpblock for TXT OUTPUT
+
+;defb &cf,&c5,&9b ; call original jumpblock for KM READ CHAR   BB09
+;defb &cf,&e1,&9c ; call original jumpblock for KM READ KEY   BB1B
+
+ret
+```
+
+
+
 
 http://www.cpcwiki.eu/forum/programming/load-using-firmware-loader-with-messages-without-%27press-play-then-any-key%27/
