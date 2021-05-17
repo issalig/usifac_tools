@@ -323,7 +323,7 @@ Yes, it is.
 
 For this example I will use code borrowed from USIFAC card and we will write our HELLO.BAS directly from asm.
 
-BASIC program start at &170 **CHECK THIS**
+BASIC program start at &170 
 
 ```asm
 data_size equ 39                            ; size of BASIC file, we know it is 39 bytes
@@ -356,16 +356,16 @@ Hello World!
 Ready
 ```
 
-And what about running the BASIC program from asm, well, this will be in the next episode.
+And what about running the BASIC program from asm? Well, we will do this later.
 
-Reference for ROM, RAM
+Reference for ROM and RAM
 http://www.cpcwiki.eu/imgs/f/f6/S968se02.pdf
 
 ##Jumpblock
 
-In the examples above you have noticed that we have used CALL &XXXX. These are calls to utilities provided by the firmware such as printing a char in screen that resides in address &BB5A and is known as TXT OUTPUT. These addresses are located in the Jumpblock space that have redirections to the real location of the routine. That is, at RAM address &BB05 there is a redirection to the starting place of the routine. Different versions of CPC will have different jumpblock code but the entry point will always be in the same place, i.e. &BB05 for TXT OUTPUT.
+In the examples above you have noticed that we have used CALL &XXXX. These are calls to utilities provided by the firmware such as printing a char in screen that resides in address &BB5A and is known as TXT OUTPUT. These addresses are located in the jumpblock space that have redirections to the real location of the routine. That is, at RAM address &BB05 there is a redirection to the starting place of the routine. Different versions of CPC will have different jumpblock code but the entry point will always be in the same place, i.e. &BB05 for TXT OUTPUT.
 
-With this BASIC code we get the instructions executed when calling &bb5a
+With this BASIC code we get the instructions executed when calling &bb5a (or you can "Pause" WinAPE and go to address &bb5a).
 
 ```basic
 10 a=PEEK(&bb5a)
@@ -374,6 +374,7 @@ With this BASIC code we get the instructions executed when calling &bb5a
 40 print hex$(a),hex$(b),hex$(c)
 CF FE 93
 ```
+
 CF corresponds to RST 1 instruction that jumps to address &0008 where resides LOW JUMP. The next two bytes are the destination address (see http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/firmware.pdf pg.38). RST instruction is used to jump to an address in just 1 cycle and is equivalent to CALL &00XX.
 
 ```
@@ -433,9 +434,6 @@ sub 32                 ; sub 32 to convert it to UPPER case
 not_lowercase:
 defb &cf,&fe,&93 ; call original jumpblock for TXT OUTPUT
 
-;defb &cf,&c5,&9b ; call original jumpblock for KM READ CHAR   BB09
-;defb &cf,&e1,&9c ; call original jumpblock for KM READ KEY   BB1B
-
 ret
 ```
 
@@ -451,7 +449,7 @@ READY
 but if you Pause on WinAPE and look for "hello" (F7) it will in lowercase.
 
 
-We can also use parameters in CALL and for example CALL &1200,0 to restore the original function.
+We can also use parameters in CALL and for example CALL &1200,0 to restore the original function. (see more info on CALL parameters http://www.cpcwiki.eu/index.php?title=Technical_information_about_Locomotive_BASIC&mobileaction=toggle_view_desktop)
 
 ``` asm	      
 org &1200
