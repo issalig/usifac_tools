@@ -358,12 +358,11 @@ Ready
 
 And what about running the BASIC program from asm? Well, we will do this later.
 
-Reference for ROM and RAM
-http://www.cpcwiki.eu/imgs/f/f6/S968se02.pdf
-
 ##Jumpblock
 
 In the examples above you have noticed that we have used CALL &XXXX. These are calls to utilities provided by the firmware such as printing a char in screen that resides in address &BB5A and is known as TXT OUTPUT. These addresses are located in the jumpblock space that have redirections to the real location of the routine. That is, at RAM address &BB05 there is a redirection to the starting place of the routine. Different versions of CPC will have different jumpblock code but the entry point will always be in the same place, i.e. &BB05 for TXT OUTPUT.
+
+Jumpblock is located at B100-BFFF. For more info check Soft968 Chapter 2. ROMs, RAM and the Restart Instructions (http://www.cpcwiki.eu/imgs/f/f6/S968se02.pdf)
 
 With this BASIC code we get the instructions executed when calling &bb5a (or you can "Pause" WinAPE and go to address &bb5a).
 
