@@ -356,68 +356,27 @@ Hello World!
 Ready
 ```
 
-And what about runnig the BASIC program from asm, well, this will be in the next episode.
+And what about running the BASIC program from asm, well, this will be in the next episode.
 
 Reference for ROM, RAM
 http://www.cpcwiki.eu/imgs/f/f6/S968se02.pdf
 
-In the examples above you have noticed that we have used CALL &XXXX. These are calls to routines utilities provided by the firmware such as printing a char in screen that resides in address &BB5A and is known as TXT OUTPUT. We can found these routines because there is a Jumpblock that defines their entry points. That is, at RAM address &BB05 there is a JP instruction that redirects to the starting place of the routine. The jumblock is copied into RAM from the JUMP RESET call.
-In particular if we go to the disassembly of firmware http://cpctech.cpc-live.com/docs/os.asm
+##Jumpblock
 
-First, we will look for the TXT OUTPUT address and we can see it is entry number 30 and its code is located at &13fe
-```asm
-defw &13fe		;; 30 firmware function: TXT OUTPUT
+In the examples above you have noticed that we have used CALL &XXXX. These are calls to utilities provided by the firmware such as printing a char in screen that resides in address &BB5A and is known as TXT OUTPUT. These addresses are located in the Jumpblock space that have redirections to the real location of the routine. That is, at RAM address &BB05 there is a redirection to the starting place of the routine. Different versions of CPC will have different jumpblock code but the entry point will always be in the same place, i.e. &BB05 for TXT OUTPUT.
+
+With this BASIC code we get the instructions executed when calling &bb5a
+
+```basic
+10 a=PEEK(&bb5a)
+20 b=PEEK(&bb5b)
+30 c=PEEK(&bb5c)
+40 print hex$(a),hex$(b),hex$(c)
+CF FE 93
 ```
+CF corresponds to RST 1 instruction that jumps to address &0008 where resides LOW JUMP. The next two bytes are the destination address (see http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/firmware.pdf pg.38). RST instruction is used to jump to an address in just 1 cycle and is equivalent to CALL &00XX.
 
-and this is the code that does.
-
-```asm
-;;===========================================================================
-;; TXT OUTPUT
-
-13fe f5        push    af
-13ff c5        push    bc
-1400 d5        push    de
-1401 e5        push    hl
-1402 cdd9bd    call    $bdd9			; IND: TXT OUT ACTION
-1405 e1        pop     hl
-1406 d1        pop     de
-1407 c1        pop     bc
-1408 f1        pop     af
-1409 c9        ret     
 ```
-
-As jumpblock resides in RAM it is possible to change the jump address and change the called routine for one that best fits our requierements.
-
-
-Imaging we want to print only uppercased characters, so we will add 32 to any character between 'a' and 'z'. The routine for doing that would be:
-
-RST are used to jump to an address in just 1 cycle. It would be equivalent to CALL &00XX
-
-CF will jump to address &0008 LOW JUMP (RST1), that will jump to the address specified by the 2 following bytes, in this case &93FE
-
-```asm
-; ld a, (&bb5a) CF
-; push a
-; ld a, (&bb5b) FE
-; ld a, (&bb5c) 93 
-
-      93       FE
--> 1001 0011 1111 1110
-   ||      |
-   ||      -ignored
-   |-lower ROM enabled
-   -upper ROM disabled
-   
-   
-bit 14 lower ROM bit 15 upper ROM (0 enabled), bit 8 is ignored  
-
-
-
-CF FE 93  ; rst 8
-
-
-
 001   &0008   LOW JUMP (RST 1)
       Action: Jumps to a routine in either the lower ROM or low RAM
       Entry:  No entry conditions - all  the  registers are passed to
@@ -432,12 +391,21 @@ CF FE 93  ; rst 8
                   jump to
               This command is used by the  majority of entries in the
               main firmware jumpblock
+```
 
+Thus, 93fe corresponds to address 13fe and if you are interested in the TXT OUTPUT routine check firmware disassembly at &13fe http://cpctech.cpc-live.com/docs/os.asm
 
-0008 c38ab9    jp      $b98a			; RST 1 - LOW: LOW JUMP
+```
+      93       FE
+-> 1001 0011 1111 1110
+   ||      
+   |-lower ROM enabled
+   -upper ROM disabled
+```
 
+Now image that we want to print only uppercase characters, so we will need to modify the jumblock for &bb5a, then subtract 32 to any character between 'a' and 'z' and call the original routine. Take into account that we have not to corrupt any register that could be in use. From the documentation of bb5a we know takes register A as input and preserves other registers at output, thus, we should behave in the same way and we will use push and pop instructions.
 
-
+The code for our uppercase function will be:
 	      
 ``` asm	      
 org &1200
@@ -445,20 +413,17 @@ org &1200
 ;overwrite jumbplock at bb5a
 ;we are not going to use a
 push hl
-
 ld l, &c3                       ; jp code 
 ld (&bb5a), hl
-ld hl, new_txt_output      ; address of new code
+ld hl, uppercase_txt_output      ; address of new code
 ld (&bb5b), hl
-
 pop hl
-
 
 ; A-Z chars range from 65 to 90
 ; a-z chars range from 97 to 122
 ;there is an offset of 32 for upper-lower
 
-new_txt_output:
+uppercase_txt_output:
 cp 'a'                 ; A-'a'   C=1 if A<'a'
 jr c, not_lowercase    ; if character < 'a' is not a lowercase
 cp 'z'+1               ; A-'z'+1 C=0 if A>'z'  
@@ -467,6 +432,9 @@ sub 32                 ; sub 32 to convert it to UPPER case
 
 not_lowercase:
 defb &cf,&fe,&93 ; call original jumpblock for TXT OUTPUT
+
+;defb &cf,&c5,&9b ; call original jumpblock for KM READ CHAR   BB09
+;defb &cf,&e1,&9c ; call original jumpblock for KM READ KEY   BB1B
 
 ret
 ```
