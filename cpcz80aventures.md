@@ -448,14 +448,14 @@ READY
 but if you Pause on WinAPE and look for "hello" (F7) it will in lowercase.
 
 
-We can also use parameters in CALL and for example CALL &1200,0 to restore the original function. (see more info on CALL parameters http://www.cpcwiki.eu/index.php?title=Technical_information_about_Locomotive_BASIC&mobileaction=toggle_view_desktop)
+We can also use parameters in CALL and for example CALL &1200,0 to restore the original function. Register A has the number of parameters, and IX has the list of parameters. The first parameter is stored in IX(0) and IX(1), the second in IX(2) and IX(3) and so on.  (See more info on CALL parameters http://www.cpcwiki.eu/index.php?title=Technical_information_about_Locomotive_BASIC&mobileaction=toggle_view_desktop)
 
 ``` asm	      
 org &1200
 
 cp 1                            ; check number of parameters of external call
 jp nz, install                  ; if no params install
-ld a,(ix+0)
+ld a,(ix+0)                     ; our param value is 8bit, so here ix+1 is not needed
 cp 0
 jc nc, restore                  ; if param1 == 0 then restore
 
